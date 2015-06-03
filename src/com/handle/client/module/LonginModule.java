@@ -10,6 +10,13 @@ import com.handle.util.domin.User;
 import com.handle.util.request.LoginRequest;
 import com.handle.util.response.LonginResponse;
 
+
+/**
+* @ClassName: LonginModule
+* @Description: 登录模块，用于登录操作
+*
+*/
+
 public class LonginModule {
     /**
     * Logger for this class

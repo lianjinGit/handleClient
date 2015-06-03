@@ -10,6 +10,13 @@ import com.handle.util.domin.User;
 import com.handle.util.request.RegisterRequest;
 import com.handle.util.response.RegisterResponse;
 
+
+/**
+* @ClassName: RegisterModule
+* @Description: ×¢²áÄ£¿é
+*
+*/
+
 public class RegisterModule {
     /**
     * Logger for this class
