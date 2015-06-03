@@ -2,11 +2,16 @@ package com.handle.client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.channels.Channels;
 import java.nio.channels.SocketChannel;
+
+import com.google.gson.Gson;
+import com.handle.client.module.LonginModule;
+import com.handle.client.module.RegisterModule;
 
 public class HandleClientApp {
 
@@ -15,10 +20,15 @@ public class HandleClientApp {
     private int port;
     private String addressStr;
 
-    public HandleClientApp( String address,int port) {
+    private LonginModule loginModule;
+    private RegisterModule registerModule;
+
+    public HandleClientApp(String address, int port) {
         super();
         this.port = port;
         this.addressStr = address;
+        loginModule = new LonginModule(this);
+        registerModule = new RegisterModule(this);
     }
 
     public void openConnection() throws java.net.UnknownHostException, java.io.IOException, SecurityException {
@@ -61,19 +71,39 @@ public class HandleClientApp {
     /**
      * Sends a message.
      */
-    public void sendMessage(String pMessage) throws java.io.IOException {
+    public void sendMessage(String pMessage) {
         BufferedWriter writer = new BufferedWriter(Channels.newWriter(mChannel, "UTF-8"));
-        writer.write(pMessage);
-        writer.newLine();
-        writer.flush();
+        try {
+            writer.write(pMessage);
+            writer.newLine();
+            writer.flush();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sends a Object.
+     */
+    public void sendMessage(Object pMessage) {
+        Gson gson = new Gson();
+        sendMessage(gson.toJson(pMessage));
     }
 
     /**
      * Gets a response from the (already open) connection.
      */
-    public String retrieveResponse() throws java.io.IOException {
+    public String retrieveResponse() {
         BufferedReader reader = new BufferedReader(Channels.newReader(mChannel, "UTF-8"));
-        String returnValue = reader.readLine();
+        String returnValue = null;
+        try {
+            returnValue = reader.readLine();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+
+        }
         return returnValue;
     }
 
@@ -82,6 +112,26 @@ public class HandleClientApp {
      */
     public boolean isConnected() {
         return mConnected;
+    }
+
+    public LonginModule getLoginModule() {
+
+        return loginModule;
+    }
+
+    public void setLoginModule(LonginModule loginModule) {
+
+        this.loginModule = loginModule;
+    }
+
+    public RegisterModule getRegisterModule() {
+
+        return registerModule;
+    }
+
+    public void setRegisterModule(RegisterModule registerModule) {
+
+        this.registerModule = registerModule;
     }
 
 }
